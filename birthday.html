@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday, Shila Je!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Helvetica&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #f9e1e7, #e3d7f4);
+            font-family: 'Helvetica', serif;
+            color: #4a3c5e;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .me {
+            margin-top: -100px;
+            font-family: 'Helvetica', serif;
+            color: #4a3c5e;
+            text-align: center;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 60%;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Helvetica', cursive;
+            font-size: 4.5rem;
+            color: #d4a5a5;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in;
+        }
+
+        h1 span {
+            position: relative;
+            display: inline-block;
+            z-index: 2;
+            animation: fireworks 1s ease-in-out infinite;
+        }
+
+        .heart {
+            color: #ff6f61;
+            font-size: 2.5rem;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #5c4b7d;
+            font-size: 1rem;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 15px;
+            border: 3px solid #f4e1e7;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cake-container {
+            cursor: pointer;
+            mix-blend-mode: multiply;
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin: 1rem auto;
+            z-index: 5;
+        }
+
+        .cake-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+        }
+
+        .candle {
+            width: 5px;
+            height: 40px;
+            background: linear-gradient(#f8f1e9, #d3c7a0);
+            position: absolute;
+            top: 75px;
+            border-radius: 2px;
+            transition: opacity 0.5s;
+            z-index: 6;
+        }
+
+        .candle:nth-child(2) {
+            left: 30%;
+            transform: translateX(-50%);
+        }
+
+        .candle:nth-child(3) {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .candle:nth-child(4) {
+            left: 70%;
+            transform: translateX(-50%);
+        }
+
+        .flame {
+            width: 6px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #ff4500);
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.4s infinite alternate;
+            z-index: 6;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1.3);
+            }
+        }
+
+
+        /* Fireworks Text Animation */
+        @keyframes fireworks {
+            0% {
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff7300;
+                transform: scale(1);
+            }
+
+            50% {
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff7300;
+                transform: scale(1.1);
+            }
+
+            100% {
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff7300;
+                transform: scale(1);
+            }
+        }
+
+        .balloon-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .balloon {
+            width: 60px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #ffcccc, #ff9999);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            cursor: pointer;
+            pointer-events: auto;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .balloon:nth-child(2) {
+            background: radial-gradient(circle at 30% 30%, #e6ccff, #d8b2d8);
+        }
+
+        .balloon:nth-child(3) {
+            background: radial-gradient(circle at 30% 30%, #ffebcc, #ffdab9);
+        }
+
+        .balloon::after {
+            content: '';
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(#5c4b7d, transparent);
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .popped {
+            opacity: 0;
+            transform: scale(1.3);
+            transition: all 0.3s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(5deg);
+            }
+
+            50% {
+                transform: translate(100px, -50px) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(5deg);
+            }
+        }
+
+        .petals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .petal {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff9999;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: fall 10s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        button {
+            background: #d4a5a5;
+            border: none;
+            padding: 12px 25px;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background: #ff6f61;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .cake-container {
+                width: 100%;
+            }
+
+            .cake-img {
+                max-width: 200px;
+            }
+
+            .balloon {
+                width: 40px;
+                height: 60px;
+            }
+
+            .gallery img {
+                max-width: 90%;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .heart {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            .cake-img {
+                max-width: 180px;
+            }
+        }
+        .msg-container {
+  white-space: nowrap; /* Prevents wrapping within each line */
+  overflow: hidden;
+  margin-top: 40px;
+  display: none;
+}
+
+.msg {
+  position: relative;
+  color: hsl(0, 76%, 67%);
+  font-size: large;
+  font-family: "Anonymous Pro", monospace;
+  letter-spacing: 2px; 
+  border-right: 2px solid hsl(0, 0%, 80%);
+  white-space: nowrap;
+  animation: typewriter 4s steps(800) 1s 1 normal both, 
+            blinkTextCursor 500ms infinite;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .msg {
+    animation: typewriter 4s steps(800) 1s 1 normal both, 
+              blinkTextCursor 500ms infinite;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .msg {
+    display: none; /* Hide the element completely */
+  }
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blinkTextCursor {
+  from {
+    border-right-color: hsl(0, 0%, 80%);
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+#words {
+  position: absolute;
+  width: 100%; /* You can adjust the height as per your needs */
+  overflow: hidden;
+  x: 0;
+  y: 0;
+}
+
+.word {
+  position: absolute;
+  font-size: 3rem; /* Adjust size as per your preference */
+  font-weight: bold;
+  color: #ff4b5c; /* Adjust color as per your preference */
+  opacity: 0;
+  animation: drop 5s linear infinite; /* Adjust the animation duration */
+}
+
+/* Falling animation */
+@keyframes drop {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="petals" id="petals"></div>
+    <div class="petals" id="words"></div>
+    <div class="balloon-container" id="balloonContainer"></div>
+    <div class="container">
+        <h1>Happy Birthday,<br> Shila Je! <span class="heart">💖</span></h1>
+
+        <div class="cake-container" onclick="blowCandle()">
+            <img src="./cake.png" alt="Birthday Cake" class="cake-img" />
+            <div class="candle" id="candle1">
+                <div class="flame" id="flame1"></div>
+            </div>
+            <div class="candle" id="candle2">
+                <div class="flame" id="flame2"></div>
+            </div>
+            <div class="candle" id="candle3">
+                <div class="flame" id="flame3"></div>
+            </div>
+        </div>
+        <audio id="sound" autoplay>
+            <source src="./cake.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+        </audio>
+        <div class="msg-container">
+            <div class="msg">On your special day, I just want to remind you how much you mean to me.</div>
+            <div class="msg">You bring so much happiness into my life, and I feel incredibly lucky to have you in it.</div>
+            <div class="msg">This is a small token of appreciation for all the joy you bring.</div>
+            <div class="msg">I hope today is as amazing as you are, and that all your dreams come true.</div>
+            <div class="msg">Wishing you a wonderful birthday</div>
+          </div>
+        <div class="gallery">
+            <!-- <img src="..." alt="Memory" /> -->
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        // Audio autoplay handling
+        const playAudio = document.getElementById("sound");
+        let playedOnLoad = false;
+
+        const promise = playAudio.play();
+
+        if (promise !== undefined) {
+            promise
+                .then(() => {
+                    playedOnLoad = true;
+                })
+                .catch(() => {
+                    playedOnLoad = false;
+                });
+        }
+
+        // If autoplay fails, play it on user interaction
+        document.addEventListener("click", function () {
+            if (!playedOnLoad) {
+                playAudio.play().then(() => {
+                    playedOnLoad = true;
+                }).catch((e) => {
+                    console.error("Still couldn't play audio:", e);
+                });
+            }
+        });
+
+        let candlesBlown = false;
+        function blowCandle() {
+            if (!candlesBlown) {
+                document.getElementById('flame1').style.opacity = '0';
+                document.getElementById('flame2').style.opacity = '0';
+                document.getElementById('flame3').style.opacity = '0';
+                candlesBlown = true;
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    colors: ['#ff9999', '#d8b2d8', '#ffdab9'],
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+            balloon.style.top = Math.random() * (window.innerHeight - 80) + 'px';
+            balloon.style.animationDelay = Math.random() * 5 + 's';
+            balloon.style.animationDuration = 10 + Math.random() * 10 + 's';
+            balloon.onclick = () => popBalloon(balloon);
+            document.getElementById('balloonContainer').appendChild(balloon);
+            return balloon;
+        }
+
+        function popBalloon(element) {
+            element.classList.add('popped');
+            confetti({
+                particleCount: 50,
+                spread: 50,
+                colors: ['#ff9999', '#d8b2d8'],
+                origin: {
+                    x: (element.getBoundingClientRect().left + 30) / window.innerWidth,
+                    y: (element.getBoundingClientRect().top + 40) / window.innerHeight
+                }
+            });
+
+            setTimeout(() => {
+                element.remove();
+                message.remove();  // Remove the message after a delay
+                createBalloon();
+            }, 300);
+        }
+
+
+
+        function initializeBalloons(count) {
+            for (let i = 0; i < count; i++) createBalloon();
+        }
+
+        initializeBalloons(15);
+
+        function createPetals() {
+            const petalsContainer = document.getElementById('petals');
+            for (let i = 0; i < 20; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDelay = Math.random() * 3 + 's';
+                petalsContainer.appendChild(petal);
+            }
+        }
+
+        createPetals();
+
+
+        function createWords() {
+    const words = ['H', 'A', 'P', 'P', 'Y', 'B', 'I', 'R', 'T', 'H', 'D', 'A', 'Y'];
+    const wordsContainer = document.getElementById('words'); // Make sure you have an element with id 'words'
+    
+    // Create each word
+    words.forEach(word => {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word';
+        wordElement.textContent = word;
+        
+        // Set random left position and animation delay for each word
+        wordElement.style.left = Math.random() * 100 + 'vw';
+        wordElement.style.animationDelay = Math.random() * 3 + 's';
+        
+        // Append the word element to the container
+        wordsContainer.appendChild(wordElement);
+    });
+}
+createWords() ;
+    </script>
+</body>
+
+</html>
