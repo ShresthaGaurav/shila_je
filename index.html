@@ -538,7 +538,7 @@
 
             setTimeout(() => {
                 element.remove();
-                message.remove();  // Remove the message after a delay
+                //message.remove();  // Remove the message after a delay
                 createBalloon();
             }, 300);
         }
@@ -549,7 +549,7 @@
             for (let i = 0; i < count; i++) createBalloon();
         }
 
-        initializeBalloons(15);
+        initializeBalloons(19);
 
         function createPetals() {
             const petalsContainer = document.getElementById('petals');
