@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Love Crash Animation</title>
+ <style>
+  html,
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+  }
+
+  canvas {
+    display: block;
+  }
+
+  #loveText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Arial, sans-serif;
+    font-size: 40px; /* default */
+    color: white;
+    opacity: 0;
+    transition: opacity 1s, font-size 0.5s;
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  /* Media Queries for different screen widths */
+  @media (max-width: 1200px) {
+    #loveText {
+      font-size: 35px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    #loveText {
+      font-size: 30px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #loveText {
+      font-size: 25px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #loveText {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    #loveText {
+      font-size: 18px;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <canvas id="heartCanvas"></canvas>
+  <div id="loveText">💝Lets Play Ludo Shila je💝</div>
+
+  <script>
+    const canvas = document.getElementById("heartCanvas");
+    const ctx = canvas.getContext("2d");
+    const loveText = document.getElementById("loveText");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    const stars = [];
+    const asteroids = [];
+    const particles = [];
+    const fallingStars = [];
+
+    let pauseAsteroids = false;
+    let pauseTimer = 0;
+    let pauseTriggered = false;
+
+    // Heart path function for stars
+    function heartFunction(t) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+      return { x, y };
+    }
+
+    // Create heart-shaped starfield
+    for (let i = 0; i < 8000; i++) {
+      const t = Math.random() * 2 * Math.PI;
+      const scale = Math.random() * 5 + 5;
+      const p = heartFunction(t);
+      stars.push({
+        x: centerX + p.x * scale,
+        y: centerY + p.y * scale,
+        size: Math.random() * 1.5,
+        active: true
+      });
+    }
+
+    // Spawn asteroid from outer canvas toward center
+    function spawnAsteroidWithTrail() {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = Math.max(canvas.width, canvas.height);
+      const x = centerX + Math.cos(angle) * distance;
+      const y = centerY + Math.sin(angle) * distance;
+      const dx = (centerX - x) / 100;
+      const dy = (centerY - y) / 100;
+
+      asteroids.push({
+        x, y, dx, dy,
+        crashed: false,
+        trail: [],
+        showTrail: false
+      });
+    }
+
+    // Draw heart shape
+    function drawHeart(ctx, x, y, size, alpha) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size / 10, size / 10);
+      ctx.fillStyle = `rgba(255, 0, 90, ${alpha})`;
+
+      ctx.beginPath();
+      ctx.moveTo(60, 20);
+      ctx.bezierCurveTo(25, -5, 0, -5, 0, 15);
+      ctx.bezierCurveTo(0, 30, 25, 45, 25, 55);
+      ctx.bezierCurveTo(25, 45, 50, 30, 50, 15);
+      ctx.bezierCurveTo(50, -5, 25, -5, 25, 15);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Heart-arrow for asteroid
+    function HeartArrow(ctx, x, y, size, rotation, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.scale(size / 50, size / 50);
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      ctx.moveTo(25, 15);
+      ctx.bezierCurveTo(25, -5, 0, -5, 0, 15);
+      ctx.bezierCurveTo(0, 30, 25, 45, 25, 55);
+      ctx.bezierCurveTo(25, 45, 50, 30, 50, 15);
+      ctx.bezierCurveTo(50, -5, 25, -5, 25, 15);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Create crash particles & falling stars
+    function createCrash(x, y) {
+      for (let i = 0; i < 25; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const speed = Math.random() * 3 + 1;
+        particles.push({
+          x, y,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          alpha: 1,
+          size: Math.random() * 2 + 2
+        });
+      }
+
+      const activeStars = stars.filter(s => s.active);
+      const chunksToDrop = Math.min(1000, activeStars.length);
+      for (let i = 0; i < chunksToDrop; i++) {
+        if (activeStars.length > 0) {
+          const star = activeStars[Math.floor(Math.random() * activeStars.length)];
+          star.active = false;
+          fallingStars.push({
+            x: star.x,
+            y: star.y,
+            size: star.size,
+            dx: (Math.random() - 0.5) * 5,
+            dy: Math.random() * 5 + 2
+          });
+        } else {
+          pauseAsteroids = true
+        }
+      }
+
+      if (stars.every(s => !s.active)) {
+        loveText.style.opacity = 1;
+      }
+    }
+
+    // Animate everything
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw stars
+      ctx.fillStyle = "white";
+      stars.forEach(s => {
+        if (s.active) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      });
+
+      // --- Asteroids ---
+      if (!pauseAsteroids) {
+        for (let i = asteroids.length - 1; i >= 0; i--) {
+          const a = asteroids[i];
+          a.trail.push({ x: a.x, y: a.y });
+          if (a.trail.length > 30) a.trail.shift();
+
+          a.x += a.dx;
+          a.y += a.dy;
+
+          const dist = Math.hypot(a.x - centerX, a.y - centerY);
+          if (dist < 1000) a.showTrail = true;
+
+          if (a.showTrail) {
+            for (let j = 0; j < a.trail.length; j += 2) {
+              const t = a.trail[j];
+              ctx.beginPath();
+              ctx.arc(t.x, t.y, 1.5, 0, 2 * Math.PI);
+              ctx.fillStyle = "black";
+              ctx.fill();
+            }
+          }
+
+          const angle = Math.atan2(a.dy, a.dx);
+          HeartArrow(ctx, a.x, a.y, 20, angle, "red");
+
+          if (dist < 10 && !a.crashed) {
+            a.crashed = true;
+            createCrash(a.x, a.y);
+          }
+
+          if (a.crashed && dist < 5) {
+            asteroids.splice(i, 1);
+          }
+        }
+      }
+
+      // --- Falling Stars ---
+      fallingStars.forEach(fs => {
+        fs.x += fs.dx;
+        fs.y += fs.dy;
+        fs.dy += 0.1;
+        ctx.beginPath();
+        ctx.arc(fs.x, fs.y, fs.size, 0, 2 * Math.PI);
+        ctx.fillStyle = "white";
+        ctx.fill();
+      });
+
+      // Trigger pause only once
+      if (!pauseTriggered && fallingStars.length > 0) {
+        pauseAsteroids = true;
+        pauseTimer = 3; // 5 seconds
+        pauseTriggered = true;
+      }
+
+      // Pause message
+      if (pauseAsteroids) {
+        const message1 = "Sorry sorry.... Shila je program bug khyoo wait";
+        const message2 = `Resuming in ${Math.ceil(pauseTimer)}...`;
+        const padding = 20;
+
+        ctx.fillStyle = "pink";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+
+        // Measure text width
+        const width1 = ctx.measureText(message1).width;
+        const width2 = ctx.measureText(message2).width;
+        const boxWidth = Math.max(width1, width2) + padding * 2;
+        const boxHeight = 60;
+
+        const x = canvas.width / 2 - boxWidth / 2;
+        const y = canvas.height / 2 - boxHeight / 2;
+
+        // Shadow (elevation)
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 5;
+
+        // Draw background rectangle
+        ctx.fillStyle = "black";
+        ctx.fillRect(x, y, boxWidth, boxHeight);
+
+        // Remove shadow for text
+        ctx.shadowColor = "transparent";
+
+        // Draw text
+        ctx.fillStyle = "red";
+        ctx.fillText(message1, canvas.width / 2, canvas.height / 2 - 5);
+        ctx.fillText(message2, canvas.width / 2, canvas.height / 2 + 25);
+
+        pauseTimer -= 1 / 60;
+        if (pauseTimer <= 0) {
+          pauseAsteroids = false;
+        }
+      }
+
+      // --- Crash particles ---
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.alpha -= 0.02;
+        drawHeart(ctx, p.x, p.y, p.size, p.alpha);
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    setInterval(spawnAsteroidWithTrail, 900);
+    animate();
+  </script>
+</body>
+
+</html>
